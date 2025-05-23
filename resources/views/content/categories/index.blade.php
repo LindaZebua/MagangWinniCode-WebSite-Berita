@@ -23,7 +23,7 @@
 
                     <div class="table-responsive table--no-card m-b-30">
                         <table class="table table-borderless table-striped table-earning">
-                            <thead>
+                           <thead class="table-dark">
                                 <tr>
                                     <th>Nama Kategori</th>
                                     <th>Aksi</th>

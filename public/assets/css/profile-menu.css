@@ -1,0 +1,122 @@
+.profile-menu {
+    position: absolute; /* Atau fixed */
+    top: auto; /* Reset properti top */
+    right: 20px;
+    transform: translateY(-10px); /* Coba nilai negatif yang sesuai */
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 5px;
+    width: 200px;
+    z-index: 1000;
+}
+.profile-header {
+    display: flex;
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 10px;
+}
+
+.profile-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.profile-info h5 {
+    margin-bottom: 0;
+    font-size: 16px;
+}
+
+.profile-info p {
+    margin-bottom: 0;
+    font-size: 12px;
+    color: #777;
+}
+
+.profile-options {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.profile-options li a {
+    display: block;
+    padding: 8px 10px;
+    text-decoration: none;
+    color: #333;
+}
+
+.profile-options li a i {
+    margin-right: 8px;
+}
+
+.profile-options li a:hover {
+    background-color: #f9f9f9;
+}
+
+.profile-options li.logout a {
+    color: #dc3545; /* Warna merah untuk logout */
+}
+
+.profile-options li.logout a:hover {
+    background-color: #ffebee; /* Warna latar belakang merah muda saat dihover */
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 10px;
+}
+
+.profile-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.profile-info h5 {
+    margin-bottom: 0;
+    font-size: 16px;
+}
+
+.profile-info p {
+    margin-bottom: 0;
+    font-size: 12px;
+    color: #777;
+}
+
+.profile-options {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.profile-options li a {
+    display: block;
+    padding: 8px 10px;
+    text-decoration: none;
+    color: #333;
+}
+
+.profile-options li a i {
+    margin-right: 8px;
+}
+
+.profile-options li a:hover {
+    background-color: #f9f9f9;
+}
+
+.profile-options li.logout a {
+    color: #dc3545; /* Warna merah untuk logout */
+}
+
+.profile-options li.logout a:hover {
+    background-color: #ffebee; /* Warna latar belakang merah muda saat dihover */
+}

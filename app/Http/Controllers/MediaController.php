@@ -16,7 +16,8 @@ class MediaController extends Controller
     public function index()
     {
         $media = Media::with('news')->latest()->paginate(10);
-        return view('content.media.index', compact('media'));
+        $berita = News::all(); // Ambil semua data berita (sesuai kebutuhan view)
+        return view('content.media.index', compact('media', 'berita'));
     }
 
     /**
@@ -33,32 +34,27 @@ class MediaController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'file' => 'required|file|max:2048', // Contoh validasi ukuran file
+        $validator = Validator::make($request->all(), [ // Menggunakan Validator::make
+            'file' => 'required|file|mimes:jpg,jpeg,png,gif,pdf|max:2048', // Tambahkan 'pdf' di sini
             'news_id' => 'required|exists:news,news_id',
         ]);
 
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
+            return redirect()->back()->withErrors($validator)->withInput(); // Mengembalikan error jika validasi gagal
         }
 
-        if ($request->hasFile('file')) {
-            $file = $request->file('file');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('public/media', $filename); // Simpan di storage/app/public/media
+        $file = $request->file('file');
+        $namaFile = time() . '_' . $file->getClientOriginalName();
+        $path = $file->storeAs('public/media', $namaFile);
 
-            Media::create([
-                'file_path' => 'media/' . $filename, // Simpan path relatif
-                'file_type' => $file->getClientMimeType(),
-                'news_id' => $request->news_id,
-            ]);
+        $media = new Media();
+        $media->file_path = 'media/' . $namaFile;
+        $media->file_type = $file->getClientMimeType();
+        $media->news_id = $request->news_id;
+        $media->save();
 
-            return redirect()->route('media.index')->with('success', 'Media berhasil ditambahkan.');
-        }
-
-        return redirect()->back()->with('error', 'Gagal mengupload file.');
+        return redirect()->route('media.index')->with('success', 'Media berhasil ditambahkan.');
     }
-
     /**
      * Display the specified media.
      */
@@ -82,7 +78,7 @@ class MediaController extends Controller
     public function update(Request $request, Media $media)
     {
         $validator = Validator::make($request->all(), [
-            'file' => 'nullable|file|max:2048',
+            'file' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048', // Tambahkan validasi mime types
             'news_id' => 'required|exists:news,news_id',
         ]);
 
@@ -113,6 +109,7 @@ class MediaController extends Controller
 
         return redirect()->route('media.index')->with('success', 'Media berhasil diperbarui.');
     }
+
 
     /**
      * Remove the specified media from storage.

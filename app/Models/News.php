@@ -9,7 +9,7 @@ class News extends Model
     protected $table = 'news';
     protected $primaryKey = 'news_id';
     protected $fillable = ['title', 'content', 'published_at', 'category_id', 'user_id', 'gambar_berita'];
-
+    
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');

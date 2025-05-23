@@ -8,19 +8,32 @@ use App\Http\Controllers\NewsController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\MediaController;
-use App\Http\Controllers\UserProfileController;
-Route::get('/', function () {
-    return redirect()->route('login');
-});
+use App\Http\Controllers\HomeController;
 
-Route::middleware('guest')->group(function () {
+use App\Http\Controllers\UserProfileController;
+use App\Models\Category;
+
+
+   Route::get('/', [HomeController::class, 'index'])->name('beranda');
+Route::get('/berita/kategori/{slug}', [HomeController::class, 'category'])->name('home.category');
+   Route::get('/berita/{slug}', [HomeController::class, 'show'])->name('home.show');
+
+
+
+
+ // Rute login
     Route::get('/login', [AuthController::class, 'index'])->name('login');
     Route::post('/login', [AuthController::class, 'verify'])->name('auth.verify');
-});
+
+    // Rute registrasi
+    Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
+    Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
-
+    Route::get('dashboard/home', [DashboardController::class, 'home'])->name('dashboard.home');
+   // Route::get('/home', [HomeController::class, 'home'])->name('home.index');
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
     Route::post('/users', [UserController::class, 'store'])->name('users.store');
@@ -30,13 +43,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 
     // Perbaikan rute berita
-    Route::get('/news', [NewsController::class, 'index'])->name('news.index');
-    Route::get('/news/create', [NewsController::class, 'create'])->name('news.create');
-    Route::post('/news', [NewsController::class, 'store'])->name('news.store');
-    Route::get('/news/{news}', [NewsController::class, 'show'])->name('news.show');
-    Route::get('/news/{news}/edit', [NewsController::class, 'edit'])->name('news.edit');
-    Route::put('/news/{news}', [NewsController::class, 'update'])->name('news.update');
-    Route::delete('/news/{news}', [NewsController::class, 'destroy'])->name('news.destroy');
+    Route::get('/news', [App\Http\Controllers\NewsController::class, 'index'])->name('news.index');
+    Route::get('/news/create', [App\Http\Controllers\NewsController::class, 'create'])->name('news.create');
+    Route::post('/news', [App\Http\Controllers\NewsController::class, 'store'])->name('news.store');
+    Route::get('/news/{news}', [App\Http\Controllers\NewsController::class, 'show'])->name('news.show');
+    Route::get('/news/{news}/edit', [App\Http\Controllers\NewsController::class, 'edit'])->name('news.edit');
+    Route::put('/news/{news}', [App\Http\Controllers\NewsController::class, 'update'])->name('news.update');
+    Route::delete('/news/{news}', [App\Http\Controllers\NewsController::class, 'destroy'])->name('news.destroy');
 
     Route::get('/categories', [App\Http\Controllers\CategoryController::class, 'index'])->name('categories.index');
     Route::get('/categories/create', [App\Http\Controllers\CategoryController::class, 'create'])->name('categories.create');
@@ -50,27 +63,24 @@ Route::middleware('auth')->group(function () {
     Route::get('/comments/create', [App\Http\Controllers\CommentController::class, 'create'])->name('comments.create');
     // Perhatikan perubahan pada parameter route dan variabel controller
     Route::get('/comments/{comment}/edit', [App\Http\Controllers\CommentController::class, 'edit'])->name('comments.edit');
-    // Perhatikan perubahan pada parameter route dan variabel controller
+
     Route::put('/comments/{comment}', [App\Http\Controllers\CommentController::class, 'update'])->name('comments.update');
     Route::delete('/comments/{comment}', [App\Http\Controllers\CommentController::class, 'destroy'])->name('comments.destroy');
-    Route::post('/comments', [App\Http\Controllers\CommentController::class, 'store'])->name('comments.store');
-     // Tambahkan baris ini
+    Route::post('/comments', [App\Http\Controllers\CommentController::class, 'store'])->name('comment.store');
+    // Tambahkan baris ini
 
     Route::get('/media', [App\Http\Controllers\MediaController::class, 'index'])->name('media.index');
     Route::get('/media/create', [App\Http\Controllers\MediaController::class, 'create'])->name('media.create');
-    Route::post('/media', [App\Http\Controllers\MediaController::class, 'store'])->name('media.store'); // <--- Add this line
+    Route::post('/media', [App\Http\Controllers\MediaController::class, 'store'])->name('media.store');
     Route::get('/media/{media}', [App\Http\Controllers\MediaController::class, 'show'])->name('media.show');
     Route::get('/media/{media}/edit', [App\Http\Controllers\MediaController::class, 'edit'])->name('media.edit');
     Route::put('/media/{media}', [App\Http\Controllers\MediaController::class, 'update'])->name('media.update');
     Route::delete('/media/{media}', [App\Http\Controllers\MediaController::class, 'destroy'])->name('media.destroy');
 
-     Route::get('/profile', [App\Http\Controllers\DashboardController::class, 'profile'])->name('dashboard.profile');
-        Route::get('/reset-password', [DashboardController::class, 'resetPassword'])->name('dashboard.resetPassword');
-        Route::post('/reset-password', [DashboardController::class, 'prosesResetPassword'])->name('dashboard.prosesResetPassword');
-  
-
-    Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
-Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
-});
-
+    Route::get('/profile', [DashboardController::class, 'profile'])->name('profil.index');
+    Route::get('/reset-password', [DashboardController::class, 'resetPassword'])->name('dashboard.resetPassword');
+    // routes/web.php
+   
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout'); // Biarkan hanya ini
+
+});

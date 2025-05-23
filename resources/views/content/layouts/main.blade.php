@@ -9,7 +9,7 @@
     <meta name="keywords" content="au theme template">
 
     <title>Dashboard Berita</title>
-
+    <link rel="stylesheet" href="{{ asset('assets/css/profile-menu.css') }}">
     <link href="{{ asset('assets/css/font-face.css') }}" rel="stylesheet" media="all">
     <link href="{{ asset('vendor/font-awesome-4.7/css/font-awesome.min.css') }}" rel="stylesheet" media="all">
     <link href="{{ asset('assets/vendor/font-awesome-5/css/fontawesome-all.min.css') }}" rel="stylesheet" media="all">
@@ -31,7 +31,7 @@
             <div class="header-mobile__bar">
                 <div class="container-fluid">
                     <div class="header-mobile-inner">
-                        <a class="logo" href="index.html">
+                        <a class="logo" href="{{ route('dashboard.index') }}">
                             <img src="{{asset('assets/images/icon/Berita02.png')}}" alt="Berita" />
                         </a>
                         <button class="hamburger hamburger--slider" type="button">
@@ -46,29 +46,32 @@
                 <div class="container-fluid">
                     <ul class="navbar-mobile__list list-unstyled">
                         <li class="has-sub">
-                            <a class="js-arrow" href="#">
-                                <i class="fas fa-tachometer-alt"></i>Dashboard</a>
+                            <a href="{{ route('dashboard.home') }}">
+                                <i class="fas fa-tachometer-alt"></i> Home
+                            </a>
                             <ul class="navbar-mobile-sub__list list-unstyled js-sub-list">
-                                <li>
-                                    <a href="{{ route('news.index') }}">
-                                        <i class="fas fa-chart-bar"></i>Berita</a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('categories.index') }}">
-                                        <i class="fas fa-table"></i>Kategori Berita</a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('users.index') }}">
-                                        <i class="far fa-check-square"></i>Users</a>
-                                </li>
-                                <li>
-                                    <a href="{{route('comment.index')}}">
-                                        <i class="fas fa-comment"></i>Komentar</a>
-                                </li>
-                                <li>
-                                    <a href="{{route('media.index')}}">
-                                        <i class="fas fa-image"></i>Media</a>
-                                </li>
+                                <div class="row">
+                                    <li>
+                                        <a href="{{ route('news.index') }}">
+                                            <i class="fas fa-chart-bar"></i>Berita</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('categories.index') }}">
+                                            <i class="fas fa-table"></i>Kategori Berita</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('users.index') }}">
+                                            <i class="far fa-check-square"></i>Users</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{route('comment.index')}}">
+                                            <i class="fas fa-comment"></i>Komentar</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{route('media.index')}}">
+                                            <i class="fas fa-image"></i>Media</a>
+                                    </li>
+                                </div>
                             </ul>
                         </li>
                         <li class="has-sub">
@@ -92,7 +95,7 @@
         </header>
         <aside class="menu-sidebar d-none d-lg-block">
             <div class="logo">
-                <a href="#">
+                <a href="{{ route('dashboard.index') }}">
                     <img src="{{asset('assets/images/icon/Berita02.png')}}" alt="Berita" />
                 </a>
             </div>
@@ -100,8 +103,9 @@
                 <nav class="navbar-sidebar">
                     <ul class="list-unstyled navbar__list">
                         <li class="active has-sub">
-                            <a class="js-arrow" href="#">
-                                <i class="fas fa-tachometer-alt"></i>Dashboard</a>
+                            <a href="{{ route('dashboard.home') }}">
+                                <i class="fas fa-tachometer-alt"></i> Home
+                            </a>
                         </li>
                         <li>
                             <a href="{{ route('news.index') }}">
@@ -133,55 +137,89 @@
                     <div class="container-fluid">
                         <div class="header-wrap">
                             <form class="form-header" action="" method="POST">
+                                @csrf
                                 <input class="au-input au-input--xl" type="text" name="search"
-                                    placeholder="Search for datas &amp; reports..." />
+                                    placeholder="Cari data &amp; laporan..." />
                                 <button class="au-btn--submit" type="submit">
                                     <i class="zmdi zmdi-search"></i>
                                 </button>
                             </form>
-                            <div class="account-wrap">
-                                <div class="account-item clearfix js-item-menu">
-                                    <div class="image">
-                                        <img src="{{asset ('assets/images/icon/avatar-01.jpg')}}" alt="John Doe" />
+                            <div class="header-button">
+                                <div class="noti-wrap">
+                                    <div class="noti__item js-item-menu">
+                                        <i class="zmdi zmdi-comment-more"></i>
+                                        <span class="quantity">1</span>
+                                        <div class="mess-dropdown js-dropdown">
+                                            <div class="mess__title">
+                                                <p>You have 2 news message</p>
+                                            </div>
+                                            <div class="mess__footer">
+                                                <a href="#">View all messages</a>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="content">
-
-
+                                    <div class="noti__item js-item-menu">
+                                        <i class="zmdi zmdi-email"></i>
+                                        <span class="quantity">2</span>
+                                        <div class="email-dropdown js-dropdown">
+                                            <div class="email__title">
+                                                <p>You have 3 email messages</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="noti__item js-item-menu">
+                                        <i class="zmdi zmdi-notifications"></i>
+                                        <span class="quantity">3</span>
+                                        <div class="notifi-dropdown js-dropdown">
+                                            <div class="notifi__title">
+                                                <p>You have 3 Notifications</p>
+                                            </div>
+                                            <div class="notifi__footer">
+                                                <a href="#">All notifications</a>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                    <div class="account-dropdown js-dropdown">
-                                        <div class="info clearfix">
-                                            <div class="image">
-                                                <a href="#">
-                                                    <img src="{{asset ('assets/images/icon/avatar-01.jpg')}}" alt="John Doe" />
-                                                </a>
-                                            </div>
-                                            
+                                <div class="account-wrap">
+                                    <div class="account-item clearfix js-item-menu">
+                                        <div class="image">
+                                            <img src="{{ asset('assets/images/icon/avatar-01.jpg') }}" alt="login" />
                                         </div>
-                                        <div class="account-dropdown__body">
-                                            <div class="account-dropdown__item">
-                                                <a href="#">
-                                                    <i class="fas fa-user"></i>Account
-                                                </a>
-                                            </div>
-                                            <div class="account-dropdown__item">
-                                                <a href="#">
-                                                    <i class="fas fa-wrench"></i>Setting
-                                                </a>
-                                            </div>
-                                            <div class="account-dropdown__item">
-                                                <a href="#">
-                                                    <i class="fas fa-cog"></i>Billing
-                                                </a>
-                                            </div>
+                                        <div class="content">
+                                            <a class="js-acc-btn" href="{{route ('profil.index')}}">login</a>
                                         </div>
-                                        <div class="account-dropdown__footer">
-                                            <ul class="list-unstyled">
-                                                <li>
-                                                    <a href="{{ route('logout') }}">
-                                                        <i class="fas fa-power-off"></i> Logout
+                                        <div class="account-dropdown js-dropdown">
+                                            <div class="info clearfix">
+                                                <div class="image">
+                                                    <a href="#">
+                                                        <img src="{{ asset('assets/images/icon/user-interface.jpg') }}" alt="John Doe" />
                                                     </a>
-                                                </li>
-                                            </ul>
+                                                </div>
+                                                <div class="content">
+                                                    <h5 class="name">
+                                                        <a href="#">john doe</a>
+                                                    </h5>
+                                                    <span class="email">johndoe@example.com</span>
+                                                </div>
+                                            </div>
+                                            <div class="account-dropdown__body">
+                                                <div class="account-dropdown__item">
+                                                    <a href="#">
+                                                        <i class="zmdi zmdi-account"></i>Account</a>
+                                                </div>
+                                                <div class="account-dropdown__item">
+                                                    <a href="#">
+                                                        <i class="zmdi zmdi-settings"></i>Setting</a>
+                                                </div>
+                                                <div class="account-dropdown__item">
+                                                    <a href="#">
+                                                        <i class="zmdi zmdi-money-box"></i>Billing</a>
+                                                </div>
+                                            </div>
+                                            <div class="account-dropdown__footer">
+                                                <a href="#">
+                                                    <i class="zmdi zmdi-power"></i>Logout</a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -208,12 +246,13 @@
     <script src="{{ asset('vendor/animsition/animsition.min.js') }}"></script>
     <script src="{{ asset('vendor/bootstrap-progressbar/bootstrap-progressbar.min.js') }}"></script>
     <script src="{{ asset('vendor/counter-up/jquery.waypoints.min.js') }}"></script>
-    <script src="{{ asset('vendor/counter-up/jquery.counterup.min.js') }}"></script>
     <script src="{{ asset('vendor/circle-progress/circle-progress.min.js') }}"></script>
     <script src="{{ asset('vendor/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
-    <script src="{{ asset('vendor/chartjs/Chart.bundle.min.js') }}"></script>
-    <script src="{{ asset('vendor/select2/select2.min.js') }}"></script>
-    <script src="{{ asset('assets/js/main.js') }}"></script>
+    <script src="{{ asset('assets/vendor/chartjs/Chart.bundle.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/select2/select2.min.js') }}"></script>
+
+    <script src="{{ asset('assts/js/main.js')}}"></script>
+
 </body>
 
 </html>

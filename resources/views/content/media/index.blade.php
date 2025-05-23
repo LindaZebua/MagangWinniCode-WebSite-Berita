@@ -1,4 +1,4 @@
-@extends('content/layouts/main') {{-- Asumsi Anda punya layout app.blade.php --}}
+@extends('content/layouts/main')
 
 @section('content')
 <div class="main-content">

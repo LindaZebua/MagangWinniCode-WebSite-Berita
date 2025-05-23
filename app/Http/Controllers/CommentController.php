@@ -6,7 +6,7 @@ use App\Models\Comment;
 use App\Models\News;
 use App\Models\User;
 use Illuminate\Http\Request;
-
+use Carbon\Carbon;
 class CommentController extends Controller
 {
     /**
@@ -33,20 +33,29 @@ class CommentController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'comment_text' => 'required|string',
-            'news_id' => 'required|exists:news,id', // Gunakan 'id' di sini
+            'news_id' => 'required|exists:news,news_id',
             'user_id' => 'required|exists:users,id',
             'commented_at' => 'nullable|date',
         ]);
-    
-        Comment::create($request->all());
-    
-        return redirect()->route('comment.index')->with('success', 'Komentar berhasil ditambahkan.');
+
+        $commented_at = $validatedData['commented_at']
+            ? Carbon::parse($validatedData['commented_at'])
+            : Carbon::now();
+
+        Comment::create([
+            'comment_text' => $validatedData['comment_text'],
+            'news_id' => $validatedData['news_id'],
+            'user_id' => $validatedData['user_id'],
+            'commented_at' => $commented_at,
+        ]);
+
+        return redirect()->route('comments.index')->with('success', 'Komentar berhasil ditambahkan.'); // Diubah dari 'comment.index' menjadi 'comments.index'
     }
 
     /**
-     * Display the specified comment.
+     * Display the specified comment.  (Not used in your provided views, but good to have)
      */
     public function show(Comment $comment)
     {
@@ -68,16 +77,25 @@ class CommentController extends Controller
      */
     public function update(Request $request, Comment $comment)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'comment_text' => 'required|string',
-            'news_id' => 'required|exists:news,id', // Gunakan 'id' di sini
+            'news_id' => 'required|exists:news,news_id',
             'user_id' => 'required|exists:users,id',
             'commented_at' => 'nullable|date',
         ]);
-    
-        $comment->update($request->all());
-    
-        return redirect()->route('comment.index')->with('success', 'Komentar berhasil diperbarui.');
+
+        $commented_at = $validatedData['commented_at']
+            ? Carbon::parse($validatedData['commented_at'])
+            : $comment->commented_at;
+
+        $comment->update([
+            'comment_text' => $validatedData['comment_text'],
+            'news_id' => $validatedData['news_id'],
+            'user_id' => $validatedData['user_id'],
+            'commented_at' => $commented_at,
+        ]);
+
+        return redirect()->route('comments.index')->with('success', 'Komentar berhasil diperbarui.'); // Diubah dari 'comment.index' menjadi 'comments.index'
     }
 
     /**

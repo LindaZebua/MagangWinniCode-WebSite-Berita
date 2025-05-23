@@ -1,4 +1,4 @@
-@extends('content/layouts/main')
+@extends('content.layouts.main')
 
 @section('content')
 <div class="main-content">
@@ -9,18 +9,17 @@
                     <div class="overview-wrap">
                         <h2 class="title-1">Daftar Komentar</h2>
                         <a href="{{ route('comments.create') }}" class="au-btn au-btn-icon au-btn--green">
-                            <i class="zmdi zmdi-plus"></i>Tambah Komentar</a>
+                            <i class="zmdi zmdi-plus"></i>Tambah Komentar
+                        </a>
                     </div>
                 </div>
             </div>
             <div class="row m-t-30">
                 <div class="col-md-12">
+                    @if(session('success'))
+                    <div class="alert alert-success">{{ session('success') }}</div>
+                    @endif
                     <div class="table-responsive table--no-card m-b-30">
-                        @if(session('success'))
-                        <div class="alert alert-success">
-                            {{ session('success') }}
-                        </div>
-                        @endif
                         <table class="table table-borderless table-striped table-earning">
                             <thead>
                                 <tr>
@@ -35,14 +34,16 @@
                             <tbody>
                                 @foreach($comments as $comment)
                                 <tr>
-                                    <td>{{ $comment->comment_id }}</td>
+                                    <td>{{ $comment->comment_id }}</td> {{-- Gunakan comment_id di sini --}}
                                     <td>{{ $comment->comment_text }}</td>
                                     <td>{{ $comment->news->title }}</td>
                                     <td>{{ $comment->user->name }}</td>
                                     <td>{{ $comment->commented_at }}</td>
                                     <td>
-                                        <a href="{{ route('comments.edit', $comment->comment_id) }}" class="btn btn-sm btn-warning">Edit</a>
-                                        <form action="{{ route('comments.destroy', $comment->comment_id) }}" method="POST" style="display: inline-block;">
+                                        {{-- Teruskan seluruh objek $comment --}}
+                                        <a href="{{ route('comments.edit', $comment) }}" class="btn btn-sm btn-warning">Edit</a>
+
+                                        <form action="{{ route('comments.destroy', $comment) }}" method="POST" style="display: inline-block;">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus?')">Hapus</button>
@@ -52,6 +53,7 @@
                                 @endforeach
                             </tbody>
                         </table>
+                        {{ $comments->links() }}
                     </div>
                 </div>
             </div>

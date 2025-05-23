@@ -23,6 +23,6 @@ class Media extends Model
      */
     public function news(): BelongsTo
     {
-        return $this->belongsTo(News::class);
+        return $this->belongsTo(News::class, 'news_id');
     }
 }

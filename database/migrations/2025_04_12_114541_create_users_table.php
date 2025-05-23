@@ -13,14 +13,15 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable(); // Tambahkan kolom 'name'
-            $table->string('username')->unique()->nullable(); // Tambahkan kolom 'username' dan pastikan unique
+            $table->string('name')->nullable();
+            $table->string('username')->unique()->nullable();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
-            $table->string('nama_lengkap')->nullable(); // Tambahkan kolom 'nama_lengkap'
-            $table->enum('role', ['admin', 'user'])->default('user'); // Tambahkan kolom 'role' dengan nilai default 'user'
+            $table->string('nama_lengkap')->nullable();
+            // Perubahan: Perbesar panjang kolom 'role' menjadi 100
+            $table->enum('role', ['admin', 'user', 'editor', 'contributor'])->default('user');
             $table->timestamps();
         });
     }

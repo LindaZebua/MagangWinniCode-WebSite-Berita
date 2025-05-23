@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth; // Import the Auth facade
+use Illuminate\Support\Facades\Auth;
+use App\Models\News;
+use App\Models\Category; // Tambahkan model Category jika diperlukan
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -16,18 +19,35 @@ class DashboardController extends Controller
 
     public function profile()
     {
-        // Use Auth::guard() to specify the guard, and ensure user() is called on the guard.
-        $user = Auth::guard('user')->user();
+        $user = Auth::user();
 
-        // Check if a user is authenticated before trying to access their ID.
         if ($user) {
-            $id = $user->id;
-             $user = User::findOrFail($id); //findOrFail akan otomatis menampilkan error jika $id tidak ditemukan
-            return view('backend.content.profile', compact('user'));
+            return view('content.profile', compact('user'));
         } else {
-            // Handle the case where no user is authenticated with the specified guard.
-            // You might want to redirect to the login page or show an error message.
-            return redirect()->route('login')->with('error', 'Please log in to view your profile.'); // Contoh: Redirect ke halaman login
+            return redirect('/login');
         }
+    }
+
+    public function home() {
+        $usersCount = User::count();
+        $totalBerita = News::count();
+        $beritaHariIni = News::whereDate('created_at', today())->count();
+        $beritaMingguIni = News::whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])->count();
+        $kategoriTerbanyak = Category::withCount('news')
+            ->orderByDesc('news_count')
+            ->first();
+
+        return view('content.layouts.home', compact(
+            'usersCount',
+            'totalBerita',
+            'beritaHariIni',
+            'beritaMingguIni',
+            'kategoriTerbanyak'
+        ));
+    }
+
+    public function resetPassword()
+    {
+        return view('content.resetPassword');
     }
 }
