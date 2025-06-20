@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\News;
+use App\Models\Category;
+use App\Models\Comment;
+use App\Models\Media;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -12,6 +16,8 @@ class UserController extends Controller
     /**
      * Display a listing of the users.
      */
+   
+
     public function index()
     {
     $users = User::all();

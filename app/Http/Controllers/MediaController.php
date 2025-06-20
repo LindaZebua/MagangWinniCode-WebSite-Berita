@@ -1,27 +1,31 @@
-<?php
+<?php // This must be the very first line, no characters before it, not even comments or blank lines
 
 namespace App\Http\Controllers;
 
 use App\Models\Media;
 use App\Models\News;
+use App\Models\Category; // Tambahkan jika belum ada, meskipun tidak digunakan langsung di controller ini
+use App\Models\User;     // Tambahkan jika belum ada
+use App\Models\Comment;  // Tambahkan jika belum ada
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Exception; // Tambahkan ini untuk menangkap Exception
 
 class MediaController extends Controller
 {
-    /**
-     * Display a listing of the media.
-     */
+
     public function index()
     {
         $media = Media::with('news')->latest()->paginate(10);
-        $berita = News::all(); // Ambil semua data berita (sesuai kebutuhan view)
-        return view('content.media.index', compact('media', 'berita'));
+        $berita = News::all(); // Ini mungkin tidak terpakai langsung di view index media, tapi tidak masalah
+        $users = User::all();   // Ini juga
+        $mediaCount = Media::count();
+        return view('content.media.index', compact('media','mediaCount', 'berita','users'));
     }
 
     /**
-     * Show the form for creating a new media.
+     * Menampilkan form untuk membuat media baru.
      */
     public function create()
     {
@@ -30,33 +34,48 @@ class MediaController extends Controller
     }
 
     /**
-     * Store a newly created media in storage.
+     * Menyimpan media baru yang dibuat ke dalam penyimpanan.
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [ // Menggunakan Validator::make
-            'file' => 'required|file|mimes:jpg,jpeg,png,gif,pdf|max:2048', // Tambahkan 'pdf' di sini
+        $validator = Validator::make($request->all(), [
+            'file' => 'required|file|mimes:jpg,jpeg,png,gif,pdf|max:2048', // PDF juga diperbolehkan
             'news_id' => 'required|exists:news,news_id',
         ]);
 
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput(); // Mengembalikan error jika validasi gagal
+            return redirect()->back()->withErrors($validator)->withInput()->with('error', 'Validasi gagal. Silakan periksa format dan ukuran file.');
         }
 
-        $file = $request->file('file');
-        $namaFile = time() . '_' . $file->getClientOriginalName();
-        $path = $file->storeAs('public/media', $namaFile);
+        try {
+            $file = $request->file('file');
+            $namaFile = time() . '_' . $file->getClientOriginalName();
+            // Menyimpan file ke storage/app/public/media
+            $path = $file->storeAs('public/media', $namaFile);
 
-        $media = new Media();
-        $media->file_path = 'media/' . $namaFile;
-        $media->file_type = $file->getClientMimeType();
-        $media->news_id = $request->news_id;
-        $media->save();
+            // Membuat entri di database dengan path yang benar
+            $media = new Media();
+            $media->file_path = 'media/' . $namaFile; // Ini akan menjadi 'media/timestamp_namafile.ext'
+            $media->file_type = $file->getClientMimeType();
+            $media->news_id = $request->news_id;
+            $media->save();
 
-        return redirect()->route('media.index')->with('success', 'Media berhasil ditambahkan.');
+            return redirect()->route('media.index')->with('success', 'Media berhasil ditambahkan.');
+
+        } catch (Exception $e) {
+            // Jika terjadi kesalahan saat menyimpan file atau data ke DB
+            // Anda bisa log error untuk debugging lebih lanjut
+            \Log::error('Gagal menyimpan media: ' . $e->getMessage());
+            // Hapus file jika sudah terlanjur tersimpan di storage tapi gagal di DB
+            if (isset($path) && Storage::exists($path)) {
+                Storage::delete($path);
+            }
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menambahkan media: ' . $e->getMessage())->withInput();
+        }
     }
+
     /**
-     * Display the specified media.
+     * Menampilkan media yang ditentukan.
      */
     public function show(Media $media)
     {
@@ -64,7 +83,7 @@ class MediaController extends Controller
     }
 
     /**
-     * Show the form for editing the specified media.
+     * Menampilkan form untuk mengedit media yang ditentukan.
      */
     public function edit(Media $media)
     {
@@ -73,55 +92,66 @@ class MediaController extends Controller
     }
 
     /**
-     * Update the specified media in storage.
+     * Memperbarui media yang ditentukan dalam penyimpanan.
      */
     public function update(Request $request, Media $media)
     {
         $validator = Validator::make($request->all(), [
-            'file' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048', // Tambahkan validasi mime types
+            'file' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048', // PDF juga diperbolehkan
             'news_id' => 'required|exists:news,news_id',
         ]);
 
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
+            return redirect()->back()->withErrors($validator)->withInput()->with('error', 'Validasi gagal. Silakan periksa format dan ukuran file.');
         }
 
-        if ($request->hasFile('file')) {
-            // Hapus file lama jika ada
-            if ($media->file_path) {
-                Storage::delete('public/' . $media->file_path);
+        try {
+            if ($request->hasFile('file')) {
+                // Hapus file lama jika ada
+                if ($media->file_path && Storage::exists('public/' . $media->file_path)) {
+                    Storage::delete('public/' . $media->file_path);
+                }
+
+                $file = $request->file('file');
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $path = $file->storeAs('public/media', $filename);
+
+                $media->update([
+                    'file_path' => 'media/' . $filename,
+                    'file_type' => $file->getClientMimeType(),
+                    'news_id' => $request->news_id,
+                ]);
+            } else {
+                // Jika tidak ada file baru diupload, hanya update news_id
+                $media->update([
+                    'news_id' => $request->news_id,
+                ]);
             }
 
-            $file = $request->file('file');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('public/media', $filename);
+            return redirect()->route('media.index')->with('success', 'Media berhasil diperbarui.');
 
-            $media->update([
-                'file_path' => 'media/' . $filename,
-                'file_type' => $file->getClientMimeType(),
-                'news_id' => $request->news_id,
-            ]);
-        } else {
-            $media->update([
-                'news_id' => $request->news_id,
-            ]);
+        } catch (Exception $e) {
+            \Log::error('Gagal memperbarui media: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui media: ' . $e->getMessage())->withInput();
         }
-
-        return redirect()->route('media.index')->with('success', 'Media berhasil diperbarui.');
     }
 
-
     /**
-     * Remove the specified media from storage.
+     * Menghapus media yang ditentukan dari penyimpanan.
      */
     public function destroy(Media $media)
     {
-        // Hapus file dari storage
-        if ($media->file_path) {
-            Storage::delete('public/' . $media->file_path);
-        }
+        try {
+            if ($media->file_path && Storage::exists('public/' . $media->file_path)) {
+                Storage::delete('public/' . $media->file_path);
+            }
 
-        $media->delete();
-        return redirect()->route('media.index')->with('success', 'Media berhasil dihapus.');
+            $media->delete();
+            return redirect()->route('media.index')->with('success', 'Media berhasil dihapus.');
+
+        } catch (Exception $e) {
+            \Log::error('Gagal menghapus media: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus media: ' . $e->getMessage());
+        }
     }
 }

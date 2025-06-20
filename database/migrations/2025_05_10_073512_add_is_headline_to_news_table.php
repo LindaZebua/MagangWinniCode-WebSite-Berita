@@ -14,8 +14,7 @@ class AddIsHeadlineToNewsTable extends Migration
     public function up()
     {
         Schema::table('news', function (Blueprint $table) {
-            $table->boolean('is_headline')->default(false)->after('content'); // Perhatikan perubahan 'body' menjadi 'content'
-            // Anda bisa menyesuaikan posisi kolom sesuai kebutuhan
+            $table->boolean('is_featured')->default(false)->after('created_at');            // Anda bisa menyesuaikan posisi kolom sesuai kebutuhan
         });
     }
 

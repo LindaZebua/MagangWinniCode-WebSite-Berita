@@ -7,6 +7,7 @@ use App\Models\News;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+
 class CommentController extends Controller
 {
     /**
@@ -14,8 +15,9 @@ class CommentController extends Controller
      */
     public function index()
     {
+        $users = User::all();
         $comments = Comment::with(['news', 'user'])->latest()->paginate(10);
-        return view('content.comments.index', compact('comments'));
+        return view('content.comments.index', compact('comments', 'users'));
     }
 
     /**
@@ -51,11 +53,11 @@ class CommentController extends Controller
             'commented_at' => $commented_at,
         ]);
 
-        return redirect()->route('comments.index')->with('success', 'Komentar berhasil ditambahkan.'); // Diubah dari 'comment.index' menjadi 'comments.index'
+        return redirect()->route('comments.index')->with('success', 'Komentar berhasil ditambahkan.');
     }
 
     /**
-     * Display the specified comment.  (Not used in your provided views, but good to have)
+     * Display the specified comment. (Not used in your provided views, but good to have)
      */
     public function show(Comment $comment)
     {
@@ -86,7 +88,7 @@ class CommentController extends Controller
 
         $commented_at = $validatedData['commented_at']
             ? Carbon::parse($validatedData['commented_at'])
-            : $comment->commented_at;
+            : $comment->commented_at; // Preserve existing commented_at if not provided
 
         $comment->update([
             'comment_text' => $validatedData['comment_text'],
@@ -95,7 +97,7 @@ class CommentController extends Controller
             'commented_at' => $commented_at,
         ]);
 
-        return redirect()->route('comments.index')->with('success', 'Komentar berhasil diperbarui.'); // Diubah dari 'comment.index' menjadi 'comments.index'
+        return redirect()->route('comments.index')->with('success', 'Komentar berhasil diperbarui.');
     }
 
     /**
@@ -104,6 +106,7 @@ class CommentController extends Controller
     public function destroy(Comment $comment)
     {
         $comment->delete();
-        return redirect()->route('comment.index')->with('success', 'Komentar berhasil dihapus.');
+        // Changed from 'comments.index' to 'comments.index' for consistency
+        return redirect()->route('comments.index')->with('success', 'Komentar berhasil dihapus.');
     }
 }

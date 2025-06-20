@@ -13,10 +13,12 @@
     <link href="{{ asset('assets/css/font-face.css') }}" rel="stylesheet" media="all">
     <link href="{{ asset('vendor/font-awesome-4.7/css/font-awesome.min.css') }}" rel="stylesheet" media="all">
     <link href="{{ asset('assets/vendor/font-awesome-5/css/fontawesome-all.min.css') }}" rel="stylesheet" media="all">
-    <link href="{{ asset('assets/vendor/mdi-font/css/material-design-iconic-font.min.css') }}" rel="stylesheet" media="all">
+    <link href="{{ asset('assets/vendor/mdi-font/css/material-design-iconic-font.min.css') }}" rel="stylesheet"
+        media="all">
     <link href="{{ asset('assets/vendor/bootstrap-4.1/bootstrap.min.css') }}" rel="stylesheet" media="all">
     <link href="{{ asset('vendor/animsition/animsition.min.css') }}" rel="stylesheet" media="all">
-    <link href="{{ asset('vendor/bootstrap-progressbar/bootstrap-progressbar-3.3.4.min.css') }}" rel="stylesheet" media="all">
+    <link href="{{ asset('vendor/bootstrap-progressbar/bootstrap-progressbar-3.3.4.min.css') }}" rel="stylesheet"
+        media="all">
     <link href="{{ asset('vendor/wow/animate.css') }}" rel="stylesheet" media="all">
     <link href="{{ asset('vendor/css-hamburgers/hamburgers.min.css') }}" rel="stylesheet" media="all">
     <link href="{{ asset('vendor/slick/slick.css') }}" rel="stylesheet" media="all">
@@ -32,7 +34,7 @@
                 <div class="container-fluid">
                     <div class="header-mobile-inner">
                         <a class="logo" href="{{ route('dashboard.index') }}">
-                            <img src="{{asset('assets/images/icon/Berita02.png')}}" alt="Berita" />
+                            <img src="{{ asset('assets/images/icon/Berita02.png') }}" alt="Berita" />
                         </a>
                         <button class="hamburger hamburger--slider" type="button">
                             <span class="hamburger-box">
@@ -46,8 +48,8 @@
                 <div class="container-fluid">
                     <ul class="navbar-mobile__list list-unstyled">
                         <li class="has-sub">
-                            <a href="{{ route('dashboard.home') }}">
-                                <i class="fas fa-tachometer-alt"></i> Home
+                            <a href="{{ route('dashboard.index') }}">
+                                <i class="fas fa-tachometer-alt"></i> Dashboard
                             </a>
                             <ul class="navbar-mobile-sub__list list-unstyled js-sub-list">
                                 <div class="row">
@@ -64,29 +66,34 @@
                                             <i class="far fa-check-square"></i>Users</a>
                                     </li>
                                     <li>
-                                        <a href="{{route('comment.index')}}">
+                                        <a href="{{ route('comments.index') }}">
                                             <i class="fas fa-comment"></i>Komentar</a>
                                     </li>
                                     <li>
-                                        <a href="{{route('media.index')}}">
+                                        <a href="{{ route('media.index') }}">
                                             <i class="fas fa-image"></i>Media</a>
                                     </li>
+                                    <li class="has-sub">
+                                        <a class="js-arrow" href="#">
+                                            <i class="fas fa-copy"></i>Account Pages</a>
+                                        <ul class="navbar-mobile-sub__list list-unstyled js-sub-list">
+
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('profil.index') }}">
+                                            <i class="fas fa-user"></i> profile
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('login') }}">
+                                            <i class="fas fa-sign-in-alt"></i>Sign In</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('logout') }}">
+                                            <i class="fas fa-user-plus"></i>Sign Up</a>
+                                    </li>
                                 </div>
-                            </ul>
-                        </li>
-                        <li class="has-sub">
-                            <a class="js-arrow" href="#">
-                                <i class="fas fa-copy"></i>Pages</a>
-                            <ul class="navbar-mobile-sub__list list-unstyled js-sub-list">
-                                <li>
-                                    <a href="login.html">Login</a>
-                                </li>
-                                <li>
-                                    <a href="register.html">Register</a>
-                                </li>
-                                <li>
-                                    <a href="forget-pass.html">Forget Password</a>
-                                </li>
                             </ul>
                         </li>
                     </ul>
@@ -96,15 +103,15 @@
         <aside class="menu-sidebar d-none d-lg-block">
             <div class="logo">
                 <a href="{{ route('dashboard.index') }}">
-                    <img src="{{asset('assets/images/icon/Berita02.png')}}" alt="Berita" />
+                    <img src="{{ asset('assets/images/icon/Berita02.png') }}" alt="Berita" />
                 </a>
             </div>
             <div class="menu-sidebar__content js-scrollbar1">
                 <nav class="navbar-sidebar">
                     <ul class="list-unstyled navbar__list">
                         <li class="active has-sub">
-                            <a href="{{ route('dashboard.home') }}">
-                                <i class="fas fa-tachometer-alt"></i> Home
+                            <a href="{{ route('dashboard.index') }}">
+                                <i class="fas fa-tachometer-alt"></i> Dashboard
                             </a>
                         </li>
                         <li>
@@ -116,16 +123,36 @@
                                 <i class="fas fa-table"></i>Kategori</a>
                         </li>
                         <li>
-                            <a href="{{ route('users.index')}}">
+                            <a href="{{ route('users.index') }}">
                                 <i class="far fa-check-square"></i>Users</a>
                         </li>
                         <li>
-                            <a href="{{route ('comment.index')}}">
+                            <a href="{{ route('comments.index') }}">
                                 <i class="fas fa-comment"></i>Komentar</a>
                         </li>
                         <li>
-                            <a href="{{route('media.index')}}">
+                            <a href="{{ route('media.index') }}">
                                 <i class="fas fa-image"></i>Media</a>
+                        </li>
+                        <li class="has-sub">
+                            <a class="js-arrow" href="#">
+                                <i class="fas fa-copy"></i>Account Pages</a>
+                            <ul class="navbar-mobile-sub__list list-unstyled js-sub-list">
+
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="{{ route('profil.index') }}">
+                                <i class="fas fa-user"></i> Profil
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('login') }}">
+                                <i class="fas fa-sign-in-alt"></i>Sign In</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('logout') }}">
+                                <i class="fas fa-user-plus"></i>Sign Up</a>
                         </li>
                     </ul>
                 </nav>
@@ -186,13 +213,14 @@
                                             <img src="{{ asset('assets/images/icon/avatar-01.jpg') }}" alt="login" />
                                         </div>
                                         <div class="content">
-                                            <a class="js-acc-btn" href="{{route ('profil.index')}}">login</a>
+                                            <a class="js-acc-btn" href="{{ route('profil.index') }}">login</a>
                                         </div>
                                         <div class="account-dropdown js-dropdown">
                                             <div class="info clearfix">
                                                 <div class="image">
                                                     <a href="#">
-                                                        <img src="{{ asset('assets/images/icon/user-interface.jpg') }}" alt="John Doe" />
+                                                        <img src="{{ asset('assets/images/icon/user-interface.jpg') }}"
+                                                            alt="John Doe" />
                                                     </a>
                                                 </div>
                                                 <div class="content">
@@ -228,14 +256,11 @@
                     </div>
                 </div>
             </header>
-            <div class="main-content">
-                <div class="section__content section__content--p30">
-                    <div class="container-fluid">
-                        @yield('content')
-                    </div>
-                </div>
-            </div>
+            @yield('content')
         </div>
+    </div>
+    </div>
+    </div>
     </div>
 
     <script src="{{ asset('vendor/jquery-3.2.1.min.js') }}"></script>
@@ -251,7 +276,7 @@
     <script src="{{ asset('assets/vendor/chartjs/Chart.bundle.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/select2/select2.min.js') }}"></script>
 
-    <script src="{{ asset('assts/js/main.js')}}"></script>
+    <script src="{{ asset('assts/js/main.js') }}"></script>
 
 </body>
 

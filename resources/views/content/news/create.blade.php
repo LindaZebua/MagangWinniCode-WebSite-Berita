@@ -29,7 +29,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="published_at">Published At</label>
-                                    <input type="datetime-local" name="published_at" id="published_at" class="form-control @error('published_at') is-invalid @enderror" value="{{ old('published_at') }}">
+                                    <input type="datetime-local" name="published_at" id="published_at" class="form-control @error('published_at') is-invalid @enderror" value="{{ old('published_at', now()->format('Y-m-d\TH:i')) }}">
                                     @error('published_at')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -37,7 +37,7 @@
                                 <div class="form-group">
                                     <label for="category_id">Category</label>
                                     <select name="category_id" id="category_id" class="form-control @error('category_id') is-invalid @enderror" required>
-                                        <option value="">-- Pilih Kategori --</option>
+                                        <option value="">-- Pilih Kategori --</option> {{-- Pastikan value="" di sini --}}
                                         @foreach ($categories as $category)
                                             <option value="{{ $category->category_id }}" {{ old('category_id') == $category->category_id ? 'selected' : '' }}>{{ $category->category_name }}</option>
                                         @endforeach
@@ -49,6 +49,7 @@
                                 <div class="form-group">
                                     <label for="user_id">User</label>
                                     <select name="user_id" id="user_id" class="form-control @error('user_id') is-invalid @enderror" required>
+                                        <option value="">-- Pilih User --</option> {{-- Tambahkan ini --}}
                                         @foreach ($users as $user)
                                             <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>{{ $user->name }}</option>
                                         @endforeach

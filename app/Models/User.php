@@ -8,6 +8,7 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
+    
     use HasFactory, Notifiable;
 
     /**
@@ -15,6 +16,7 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
+    
     protected $fillable = [
         'name',             // Biasanya untuk display name / nama panggilan
         'username',         // Kolom username yang unik

@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use App\Models\News;
+use App\Models\News;    // Impor model News
+use App\Models\User;    // Impor model User
+use App\Models\Comment; // Impor model Comment
+use App\Models\Media;   // Impor model Media
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -14,8 +17,10 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = Category::all();
-        $news = News::latest()->paginate(10);
-        return view('content.categories.index', compact('categories'));
+        $categoriesCount = $categories->count();
+        $users = User::all(); // Ini masih diperlukan jika layout utama (main.blade.php) menggunakan $users
+
+        return view('content.categories.index', compact('categories', 'categoriesCount', 'users'));
     }
 
     /**
@@ -23,7 +28,10 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return view('content.categories.create');
+        // Jika content.categories.create juga menggunakan layout yang membutuhkan $users,
+        // Anda perlu mengambil $users di sini juga.
+        $users = User::all(); // Tambahkan ini jika dibutuhkan
+        return view('content.categories.create', compact('users')); // Dan tambahkan di compact
     }
 
     /**
@@ -46,7 +54,10 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        return view('content.categories.show', compact('category'));
+        // Jika content.categories.show juga menggunakan layout yang membutuhkan $users,
+        // Anda perlu mengambil $users di sini juga.
+        $users = User::all(); // Tambahkan ini jika dibutuhkan
+        return view('content.categories.show', compact('category', 'users')); // Dan tambahkan di compact
     }
 
     /**
@@ -54,7 +65,10 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        return view('content.categories.edit', compact('category'));
+        // Jika content.categories.edit juga menggunakan layout yang membutuhkan $users,
+        // Anda perlu mengambil $users di sini juga.
+        $users = User::all(); // Tambahkan ini jika dibutuhkan
+        return view('content.categories.edit', compact('category', 'users')); // Dan tambahkan di compact
     }
 
     /**

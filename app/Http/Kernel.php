@@ -40,10 +40,14 @@ class Kernel extends HttpKernel
     /**
      * The application's route middleware.
      */
+    
     protected $routeMiddleware = [
         'auth' => \App\Http\Middleware\Authenticate::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+
+        // Pastikan baris ini sama persis, termasuk backslash (\)
+        'admin' => \App\Http\Middleware\AdminMiddleware::class,
     ];
 }

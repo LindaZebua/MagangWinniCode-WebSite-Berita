@@ -42,6 +42,7 @@
                                 <td>{{ $user->nama_lengkap }}</td>
                                 <td>{{ ucfirst($user->role) }}</td>
                                 <td class="d-flex gap-1">
+                                    {{-- Menggunakan $user->id agar konsisten dengan UserController@show --}}
                                     <a href="{{ route('users.show', $user->id) }}" class="btn btn-sm btn-info">{{ __('Lihat') }}</a>
                                     <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-warning">{{ __('Edit') }}</a>
 
@@ -53,7 +54,6 @@
                                         </button>
                                     </form>
                                 </td>
-                            </tr>
                             </tr>
                             @empty
                             <tr>

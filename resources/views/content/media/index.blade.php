@@ -1,18 +1,21 @@
-@extends('content/layouts/main')
+@extends('content.layouts.main') {{-- Ini memberitahu Laravel untuk menggunakan layout utama --}}
 
 @section('content')
 <div class="main-content">
     <div class="section__content section__content--p30">
         <div class="container-fluid">
+            {{-- Bagian atas halaman (title, add button) --}}
             <div class="row">
                 <div class="col-md-12">
                     <div class="overview-wrap">
                         <h2 class="title-1">Data Media</h2>
                         <a href="{{ route('media.create') }}" class="au-btn au-btn-icon au-btn--green">
-                            <i class="zmdi zmdi-plus"></i>Tambah Media</a>
+                            <i class="zmdi zmdi-plus"></i>Tambah Media
+                        </a>
                     </div>
                 </div>
             </div>
+            {{-- Tabel Media --}}
             <div class="row m-t-30">
                 <div class="col-md-12">
                     <div class="table-responsive table--no-card m-b-30">
@@ -28,7 +31,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($media as $item)
+                                @forelse ($media as $item) {{-- Loop ini ada di sini --}}
                                     <tr>
                                         <td>{{ $item->media_id }}</td>
                                         <td><a href="{{ asset('storage/' . $item->file_path) }}" target="_blank">{{ $item->file_path }}</a></td>
@@ -52,7 +55,7 @@
                                 @endforelse
                             </tbody>
                         </table>
-                        {{ $media->links() }}
+                        {{ $media->links() }} {{-- Pagination ada di sini --}}
                     </div>
                 </div>
             </div>

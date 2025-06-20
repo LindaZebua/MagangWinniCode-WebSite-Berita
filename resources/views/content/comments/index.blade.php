@@ -19,7 +19,7 @@
                     @if(session('success'))
                     <div class="alert alert-success">{{ session('success') }}</div>
                     @endif
-                    <div class="table-responsive table--no-card m-b-30">
+                    <div class="table-responsive table--no-card m-b-25">
                         <table class="table table-borderless table-striped table-earning">
                             <thead>
                                 <tr>
@@ -41,12 +41,15 @@
                                     <td>{{ $comment->commented_at }}</td>
                                     <td>
                                         {{-- Teruskan seluruh objek $comment --}}
-                                        <a href="{{ route('comments.edit', $comment) }}" class="btn btn-sm btn-warning">Edit</a>
+                                        <a href="{{ route('comments.edit', $comment) }}"
+                                            class="btn btn-sm btn-warning">Edit</a>
 
-                                        <form action="{{ route('comments.destroy', $comment) }}" method="POST" style="display: inline-block;">
+                                        <form action="{{ route('comments.destroy', $comment) }}" method="POST"
+                                            style="display: inline-block;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus?')">Hapus</button>
+                                            <button type="submit" class="btn btn-sm btn-danger"
+                                                onclick="return confirm('Apakah Anda yakin ingin menghapus?')">Hapus</button>
                                         </form>
                                     </td>
                                 </tr>
