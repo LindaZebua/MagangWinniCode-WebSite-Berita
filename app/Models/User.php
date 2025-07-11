@@ -8,7 +8,6 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    
     use HasFactory, Notifiable;
 
     /**
@@ -16,15 +15,15 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    
     protected $fillable = [
-        'name',             // Biasanya untuk display name / nama panggilan
-        'username',         // Kolom username yang unik
-        'nama_lengkap',     // Nama lengkap pengguna
+        'name', // Pastikan kolom ini ada di database dan fungsinya jelas (disarankan untuk username atau nama lengkap)
+        'username',
+        'nama_lengkap',
         'email',
         'password',
         'verification_token',
         'email_verified_at',
+        'role', // Tambahkan 'role' jika belum ada
     ];
 
     /**
@@ -35,7 +34,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
-        'verification_token', // Sembunyikan token ini juga
+        'verification_token',
     ];
 
     /**
@@ -45,16 +44,20 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed', // Laravel 9+ otomatis hash password
+        'password' => 'hashed',
     ];
 
-
-    // Definisi relasi
+    /**
+     * Get the news authored by the user.
+     */
     public function news()
     {
-        return $this->hasMany(News::class, 'user_id');
+        return $this->hasMany(News::class, 'user_id', 'id');
     }
 
+    /**
+     * Get the comments made by the user.
+     */
     public function comments()
     {
         return $this->hasMany(Comment::class, 'user_id');

@@ -4,33 +4,31 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str; // Tambahkan ini
 
 class News extends Model
 {
     use HasFactory;
 
-    // Define the primary key if it's not 'id'
-    protected $primaryKey = 'news_id';
-      protected $dates = ['updated_at'];
+    protected $primaryKey = 'news_id'; // Primary key diset ke 'news_id'
+    protected $table = 'news'; // Nama tabel database
+     public function getRouteKeyName()
+    {
+        return 'news_id'; // Ini harus cocok dengan nama kolom di DB
+    }
 
-    // Specify the table name if it's not the plural form of the model name
-    protected $table = 'news';
-
-    // Define fillable fields for mass assignment
     protected $fillable = [
         'category_id',
         'user_id',
         'title',
-        'slug',
         'content',
-        'gambar_berita', // Assuming this is the column for the image
+        'gambar_berita', // Kolom untuk nama file gambar
         'views',
         'published_at',
     ];
 
-    // Cast attributes to native types
     protected $casts = [
-        'published_at' => 'datetime', // This is the crucial line to add or ensure it's present
+        'published_at' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
@@ -40,6 +38,7 @@ class News extends Model
      */
     public function category()
     {
+        // Relasi many-to-one dengan Category. foreign_key: category_id, owner_key: category_id
         return $this->belongsTo(Category::class, 'category_id', 'category_id');
     }
 
@@ -48,7 +47,7 @@ class News extends Model
      */
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->belongsTo(User::class, 'user_id', 'id'); // 'id' adalah primary key default untuk model User
     }
 
     /**
@@ -56,16 +55,16 @@ class News extends Model
      */
     public function comments()
     {
+        // Relasi one-to-many dengan Comment. foreign_key: news_id, local_key: news_id
         return $this->hasMany(Comment::class, 'news_id', 'news_id');
     }
-public function media()
+
+
+    public function media()
     {
+        // Contoh relasi one-to-many dengan Media. foreign_key: news_id, local_key: news_id
         return $this->hasMany(Media::class, 'news_id', 'news_id');
     }
 
-    // Mutator for slug generation (optional, but good practice)
-    public function setSlugAttribute($value)
-    {
-        $this->attributes['slug'] = \Str::slug($value);
-    }
+  
 }

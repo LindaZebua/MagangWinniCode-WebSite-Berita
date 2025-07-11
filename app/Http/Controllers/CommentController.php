@@ -7,6 +7,7 @@ use App\Models\News;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
@@ -33,27 +34,33 @@ class CommentController extends Controller
     /**
      * Store a newly created comment in storage.
      */
-    public function store(Request $request)
+  public function store(Request $request)
     {
+        // Pastikan user sudah login di awal untuk keamanan
+        if (!Auth::check()) {
+            return redirect()->back()->with('error', 'Anda harus login untuk berkomentar.');
+        }
+
         $validatedData = $request->validate([
-            'comment_text' => 'required|string',
-            'news_id' => 'required|exists:news,news_id',
-            'user_id' => 'required|exists:users,id',
-            'commented_at' => 'nullable|date',
+            'comment_text' => 'required|string|max:1000', // Ditambahkan max length
+            'news_id' => 'required|exists:news,news_id', // Pastikan validasi ke news_id
         ]);
 
-        $commented_at = $validatedData['commented_at']
-            ? Carbon::parse($validatedData['commented_at'])
-            : Carbon::now();
+        $news = News::find($validatedData['news_id']);
+        if (!$news) {
+            return redirect()->back()->with('error', 'Artikel berita tidak ditemukan.');
+        }
 
         Comment::create([
             'comment_text' => $validatedData['comment_text'],
             'news_id' => $validatedData['news_id'],
-            'user_id' => $validatedData['user_id'],
-            'commented_at' => $commented_at,
+            'user_id' => Auth::id(), // Gunakan ID pengguna yang sedang login
+            'commented_at' => Carbon::now(), // Otomatis mengatur waktu saat ini
         ]);
 
-        return redirect()->route('comments.index')->with('success', 'Komentar berhasil ditambahkan.');
+        // Redirect kembali ke halaman berita tunggal setelah komentar berhasil
+        // Menggunakan slug jika tersedia, jika tidak kembali ke news_id
+        return redirect()->route('news.single', $news->slug ?? $news->news_id)->with('success', 'Komentar Anda berhasil ditambahkan!');
     }
 
     /**

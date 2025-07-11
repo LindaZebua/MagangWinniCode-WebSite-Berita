@@ -36,7 +36,7 @@
                     <div class="login-content">
                         <div class="login-logo">
                             <a href="#">
-                                <img src="{{ asset('assets/images/icon/Berita.png') }}" alt="CoolAdmin">
+                                <img src="{{ asset('assets/images/icon/Berita551.png') }}" alt="CoolAdmin">
                             </a>
                         </div>
                         <div class="login-form">
@@ -85,9 +85,6 @@
                                 <div class="login-checkbox">
                                     <label>
                                         <input type="checkbox" name="remember">Remember Me
-                                    </label>
-                                    <label>
-                                        <a href="{{route('dashboard.resetPassword')}}">Forgotten Password?</a>
                                     </label>
                                 </div>
                                 <button class="au-btn au-btn--block au-btn--green m-b-20" type="submit">Sign In</button>

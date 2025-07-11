@@ -14,7 +14,7 @@
                             <h2>{{ $news->title }}</h2>
                             @if ($news->gambar_berita)
                                 <div class="mb-3">
-                                    <img src="{{ asset('storage/' . $news->gambar_berita) }}" alt="{{ $news->title }}" class="img-fluid">
+                                    <img src="{{ asset('storage/uploads/' . $news->gambar_berita) }}" alt="{{ $news->title }}" class="img-fluid">
                                 </div>
                             @endif
                             <p>{{ $news->content }}</p>

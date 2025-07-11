@@ -1,17 +1,16 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Log; // Add Log Facade for error logging
+use Illuminate\Support\Facades\Log;
 
 use App\Models\User;
-use App\Mail\VerifyEmail; // Ensure this Mailable exists and is correctly configured
+use App\Mail\VerifyEmail;
 
 class AuthController extends Controller
 {
@@ -22,7 +21,6 @@ class AuthController extends Controller
      */
     public function index()
     {
-        // This method typically displays the login form.
         return view('auth.login');
     }
 
@@ -34,37 +32,30 @@ class AuthController extends Controller
      */
     public function verify(Request $request)
     {
-        // Validate the incoming login credentials
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
 
-        // Attempt to log the user in
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
-            $request->session()->regenerate(); // Regenerate session ID to prevent session fixation attacks
+            $request->session()->regenerate();
 
-            // Check if the user's email is verified
             if ($user->email_verified_at === null) {
-                Auth::logout(); // Log out the unverified user immediately
-                // Redirect back to login with an error message
+                Auth::logout();
                 return back()->with('error', 'Akun belum diverifikasi. Silakan cek email Anda untuk verifikasi.');
             }
 
-            // Redirect based on user role after successful login and email verification
-            // Ensure the 'role' column exists in your 'users' table and is populated correctly
             if ($user->role === 'admin') {
-                return redirect()->intended('/admin/dashboard'); // Redirect to admin dashboard
+                return redirect()->intended('/admin/dashboard');
             }
 
-            return redirect()->intended('/dashboard'); // Redirect to regular user dashboard
+            return redirect()->intended('/dashboard');
         }
 
-        // If authentication fails, redirect back with an error message
         return back()->withErrors([
             'email' => 'Email atau password salah.',
-        ])->onlyInput('email'); // Keep the email input filled
+        ])->onlyInput('email');
     }
 
     /**
@@ -74,7 +65,6 @@ class AuthController extends Controller
      */
     public function showRegistrationForm()
     {
-        // This method displays the registration form.
         return view('auth.register');
     }
 
@@ -86,56 +76,55 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
-        // Validate the incoming registration data
         $validator = Validator::make($request->all(), [
             'nama_lengkap' => 'required|string|max:255',
-            'username' => 'required|string|max:255|unique:users,username', // Ensure username is unique
-            'email' => 'required|string|email|max:255|unique:users,email',   // Ensure email is unique and valid format
-            'password' => 'required|string|min:8|confirmed',                 // Password must be at least 8 chars and match confirmation
-            'aggree' => 'required|accepted',                                 // Ensure terms and policy checkbox is checked
+            'username' => 'required|string|max:255|unique:users,username',
+            'email' => 'required|string|email|max:255|unique:users,email',
+            'password' => 'required|string|min:8|confirmed',
+            'aggree' => 'required|accepted',
         ]);
 
-        // If validation fails, redirect back with errors and old input
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }
 
         try {
-            // Create the new user record in the database
             $user = User::create([
-                'name' => $request->username, // Assuming 'name' column in users table stores username. If it's for full name, change to $request->nama_lengkap
+                'name' => $request->username,
                 'username' => $request->username,
                 'nama_lengkap' => $request->nama_lengkap,
                 'email' => $request->email,
-                'password' => Hash::make($request->password), // Hash the password for security
-                'verification_token' => Str::random(60),     // Generate a unique verification token
-                'role' => 'user',                            // Assign a default role for new users
+                'password' => Hash::make($request->password),
+                'email_verified_at' => now(), // Tandai langsung terverifikasi
+                'verification_token' => null, // Hapus token verifikasi karena sudah langsung terverifikasi
+                'role' => 'user',
             ]);
 
-            // Prepare the email verification link
-            $verificationLink = route('verify.email', ['token' => $user->verification_token]);
+            // Opsional: Anda bisa tetap mengirim email selamat datang atau informasi lain,
+            // tetapi HAPUS pengiriman email verifikasi.
+            // Contoh (jika Anda ingin mengirim email tapi bukan untuk verifikasi):
+            // Mail::to($user->email)->send(new WelcomeEmail($user));
 
-            // Send the email verification link to the user
-            Mail::to($user->email)->send(new VerifyEmail($user, $verificationLink));
+            // Langsung login setelah registrasi
+            Auth::login($user);
 
-            // Redirect to the login page with a success message after successful registration and email sending
-            return redirect()->route('login')->with('success', 'Registrasi berhasil! Silakan cek email Anda untuk verifikasi akun.');
+            // Arahkan ke dashboard berdasarkan role
+            if ($user->role === 'admin') {
+                return redirect()->intended('/admin/dashboard')->with('success', 'Registrasi berhasil! Anda telah berhasil login sebagai Admin.');
+            }
+            return redirect()->intended('/dashboard')->with('success', 'Registrasi berhasil! Anda telah berhasil login.');
 
         } catch (\Exception $e) {
-            // Log the error for debugging purposes (e.g., if email sending fails)
-            Log::error('Gagal mengirim email verifikasi ke ' . $request->email . ': ' . $e->getMessage());
+            Log::error('Registrasi gagal untuk ' . $request->email . ': ' . $e->getMessage());
 
-            // If user creation succeeded but email sending failed, you might want to delete the user
-            // to prevent unverified accounts that cannot be verified. This behavior can be adjusted.
+            // Jika terjadi error saat menyimpan ke database, hapus user yang mungkin setengah jadi
             if (isset($user) && $user->exists()) {
-                $user->delete(); // Delete the user if email sending failed
+                $user->delete();
             }
 
-            // Redirect back with an error message if registration or email sending fails
-            return back()->with('error', 'Registrasi gagal. Tidak dapat mengirim email verifikasi. Silakan coba lagi nanti.')->withInput();
+            return back()->with('error', 'Registrasi gagal. Silakan coba lagi nanti.')->withInput();
         }
     }
-
     /**
      * Handle the email verification process from a link.
      *
@@ -144,27 +133,22 @@ class AuthController extends Controller
      */
     public function handleVerification($token)
     {
-        // Find the user by the verification token
         $user = User::where('verification_token', $token)->first();
 
-        // If no user is found with the given token
         if (!$user) {
             return redirect()->route('login')->with('error', 'Token verifikasi tidak valid atau sudah kedaluwarsa.');
         }
 
-        // If the email is already verified
         if ($user->email_verified_at) {
             return redirect()->route('login')->with('info', 'Email Anda sudah diverifikasi sebelumnya. Silakan login.');
         }
 
-        // Mark the email as verified
-        $user->email_verified_at = now();       // Set the current timestamp for verification
-        $user->verification_token = null;       // Clear the verification token
-        $user->save();                          // Save the user changes
+        $user->email_verified_at = now();
+        $user->verification_token = null;
+        $user->save();
 
-        Auth::login($user); // Log the user in automatically after successful verification
+        Auth::login($user);
 
-        // Redirect to the dashboard with a success message
         return redirect()->intended('/dashboard')->with('success', 'Email Anda berhasil diverifikasi! Anda sekarang sudah login.');
     }
 
@@ -176,11 +160,10 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-        Auth::logout(); // Log out the authenticated user
-        $request->session()->invalidate(); // Invalidate the current session
-        $request->session()->regenerateToken(); // Regenerate the CSRF token
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
-        // Redirect to the login page with a success message
         return redirect()->route('login')->with('success', 'Anda telah berhasil keluar.');
     }
 }

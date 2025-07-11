@@ -103,7 +103,7 @@
         <aside class="menu-sidebar d-none d-lg-block">
             <div class="logo">
                 <a href="{{ route('dashboard.index') }}">
-                    <img src="{{ asset('assets/images/icon/Berita02.png') }}" alt="Berita" />
+                    <img src="{{ asset('assets/images/icon/Berita551.png') }}" alt="Berita" />
                 </a>
             </div>
             <div class="menu-sidebar__content js-scrollbar1">

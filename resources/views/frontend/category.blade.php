@@ -19,16 +19,16 @@
                                     <div class="mb-2">
                                         {{-- Gunakan ID kategori untuk rute --}}
                                         <a class="badge badge-primary text-uppercase font-weight-semi-bold p-1 mr-2"
-                                           href="{{ route('category.news', $newsItem->category->category_id ?? '') }}">
+                                           href="{{ route('categories.show', $newsItem->category->category_id ?? '') }}">
                                            {{ $newsItem->category->category_name ?? 'Uncategorized' }}
                                         </a>
                                         {{-- Gunakan news_id untuk route 'news.single' --}}
-                                        <a class="text-body" href="{{ route('news.single', $newsItem->news_id) }}">
+                                        <a class="text-body" href="{{ route('news.show', $newsItem->news_id) }}">
                                             <small>{{ \Carbon\Carbon::parse($newsItem->published_at)->format('M d, Y') }}</small>
                                         </a>
                                     </div>
                                     {{-- Gunakan news_id untuk route 'news.single' --}}
-                                    <a class="h6 m-0 text-uppercase font-weight-bold" href="{{ route('news.single', $newsItem->news_id) }}">{{ Str::limit($newsItem->title, 70) }}</a>
+                                    <a class="h6 m-0 text-uppercase font-weight-bold" href="{{ route('news.show', $newsItem->news_id) }}">{{ Str::limit($newsItem->title, 70) }}</a>
                                 </div>
                             </div>
                         </div>

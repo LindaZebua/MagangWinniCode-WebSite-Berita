@@ -28,8 +28,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        // Jika content.categories.create juga menggunakan layout yang membutuhkan $users,
-        // Anda perlu mengambil $users di sini juga.
+       
         $users = User::all(); // Tambahkan ini jika dibutuhkan
         return view('content.categories.create', compact('users')); // Dan tambahkan di compact
     }

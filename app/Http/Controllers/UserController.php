@@ -16,15 +16,12 @@ class UserController extends Controller
     /**
      * Display a listing of the users.
      */
-   
-
     public function index()
     {
-    $users = User::all();
-    return view('content.users.index', compact('users'));
-    
-        
+        $users = User::all();
+        return view('content.users.index', compact('users'));
     }
+
     /**
      * Show the form for creating a new user.
      */
@@ -39,7 +36,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255', // Ini untuk kolom 'name' jika ada dan terpisah dari username/nama_lengkap
             'username' => 'required|string|max:255|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
@@ -48,7 +45,7 @@ class UserController extends Controller
         ]);
 
         User::create([
-            'name' => $request->name,
+            'name' => $request->name, // Pastikan ini sesuai dengan apa yang ingin Anda simpan di kolom 'name'
             'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
@@ -63,10 +60,11 @@ class UserController extends Controller
      * Display the specified user.
      */
     public function show(string $username)
-{
-    $user = User::where('username', $username)->firstOrFail();
-    return view('content.users.show', compact('user'));
-}
+    {
+        $user = User::where('username', $username)->firstOrFail();
+        return view('content.users.show', compact('user'));
+    }
+
     /**
      * Show the form for editing the specified user.
      */

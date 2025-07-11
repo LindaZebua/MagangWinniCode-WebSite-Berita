@@ -14,17 +14,22 @@ use App\Http\Controllers\AdminController;
 use App\Models\Category;
 
 // Route untuk halaman publik (frontend)
-Route::prefix('/')->group(function () {
-   Route::get('/', [HomeController::class, 'index'])->name('home');
-   Route::get('/category/{category}', [HomeController::class, 'showCategoryNews'])->name('category.news');
 
-   // Ubah URL agar tidak bentrok dengan admin
-   Route::get('/news/detail/{news}', [HomeController::class, 'showSingleNews'])->name('news.single');
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/category/{category:category_id}', [HomeController::class, 'showCategoryNews'])->name('categories.show');
+Route::get('/category/{category}', [HomeController::class, 'showCategoryNews'])->name('category.show');
+Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
 
-   // Komentar publik, tidak perlu login
-   Route::post('/comments', [CommentController::class, 'store'])->name('comments.news');
-   Route::get('/contact', [HomeController::class, 'contact'])->name('home.contact');
-});
+Route::get('/news/create', [App\Http\Controllers\NewsController::class, 'create'])->name('news.create');
+Route::get('/news/{news}', [App\Http\Controllers\NewsController::class, 'show'])->name('news.show');
+Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+
+Route::get('/news/{news_id}', [HomeController::class, 'showSingleNews'])->name('news.single');
+//Route::get('/news/{news}', [HomeController::class, 'showSingleNews'])->name('news.single');
+//Route::get('/news/{news:slug}', [HomeController::class, 'showSingleNews'])->name('news.single');
+Route::post('/comment', [HomeController::class, 'storeComment'])->name('comment.store');
+
+Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 
 
 
@@ -33,7 +38,6 @@ Route::prefix('/')->group(function () {
 Route::get('/login', [AuthController::class, 'index'])->name('login');
 Route::post('/login', [AuthController::class, 'verify'])->name('auth.verify');
 
-// Rute registrasi
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
 Route::get('/verify-email/{token}', [AuthController::class, 'handleVerification'])->name('verify.email');
@@ -49,17 +53,15 @@ Route::middleware(['auth'])->group(function () {
    Route::get('/reset/password', [DashboardController::class, 'resetPassword'])->name('dashboard.resetPassword');
 
    Route::get('/users', [UserController::class, 'index'])->name('users.index');
-   Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
    Route::post('/users', [UserController::class, 'store'])->name('users.store');
-   Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
    Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
    Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 
 
    // Perbaikan rute berita
+
    Route::get('/news', [App\Http\Controllers\NewsController::class, 'index'])->name('news.index');
-   Route::get('/news/create', [App\Http\Controllers\NewsController::class, 'create'])->name('news.create');
    Route::post('/news', [App\Http\Controllers\NewsController::class, 'store'])->name('news.store');
    Route::get('/news/{news}', [App\Http\Controllers\NewsController::class, 'show'])->name('news.show');
    Route::get('/news/{news}/edit', [App\Http\Controllers\NewsController::class, 'edit'])->name('news.edit');
